@@ -1,0 +1,84 @@
+<?php
+// $Id$
+
+/**
+ * @file
+ * TODO: Enter file description here.
+ */
+
+/**
+ * Implementation of hook_block().
+ */
+function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
+  switch ($op) {
+
+    case 'list':
+      $blocks[0]['info'] = t('Google Weather');
+      return $blocks;
+
+    case 'configure':
+      // OPTIONAL: Enter form elements to add to block configuration screen, if required.
+      if ($delta == 0 && user_access('administer module')) {
+
+        $form['google_weather_default_location'] = array(
+          '#type' => 'textfield',
+          '#title' => t('Default location'),
+          '#default_value' => variable_get("google_weather_default_location", 'Roma'),
+        );
+        $form['google_weather_default_degree_type'] = array(
+          '#type' => 'radios',
+          '#title' => t('Default degree type'),
+          '#default_value' => variable_get("google_weather_default_degree_type", 'C'),
+          '#options' => array('C' => 'Celsius', 'F' => 'Farenheit'),
+        );
+
+      }
+      return $form;
+
+    case 'save':
+      // OPTIONAL: Add code to trigger when block configuration is saved, if required.
+      if ($delta == 0) {
+        foreach ($edit as $label => $value) {
+          variable_set($label, $value);
+        }
+      }
+      break;
+
+    case 'view':
+      if ($delta == 0) {
+        $block['subject'] = t('Google Weather');
+        $block['content'] = theme('google_weather_block', 'So what?!');
+      }
+      // OPTIONAL: Enter additional cases for each additional block, if defined.
+
+      return $block;
+  }
+}
+
+
+/**
+ * Implementation of hook_theme().
+ */
+function google_weather_theme($existing, $type, $theme, $path) {
+  return array(
+    'google_weather_block' => array(
+      'arguments' => array('text' => 'No text'),
+      'template' => 'google-weather-block',
+    ),
+  );
+}
+
+/**
+ * Implementation of theming callbacks
+ */
+function theme_google_weather_block($text) {
+  return t($text);
+}
+
+/**
+* Implementation of $modulename_preprocess_$hook().
+*/
+function google_weather_preprocess_google_weather_block(&$variables) {
+  $variables['url'] = 'http://www.google.com/ig/api';
+  $variables['weather_location'] = variable_get('google_weather_default_location', 'Roma');
+}

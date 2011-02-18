@@ -1,0 +1,5 @@
+; $Id$
+name = Google Weather
+description = Display a block with weather condition and forecasting, powered by Google Weather API.
+package = Others
+core = 6.x
