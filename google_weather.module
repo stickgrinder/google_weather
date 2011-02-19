@@ -46,8 +46,15 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
 
     case 'view':
       if ($delta == 0) {
+
+        // try to read location from cookie/session, or take the default one
+        $location = ''; //stubbing
+
+        // derive weather from location
+        $weather = _google_weather_get_weather($location);
+
         $block['subject'] = t('Google Weather');
-        $block['content'] = theme('google_weather_block', 'So what?!');
+        $block['content'] = theme('google_weather_block', $weather);
       }
       // OPTIONAL: Enter additional cases for each additional block, if defined.
 
@@ -55,6 +62,25 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
   }
 }
 
+/**
+ * Response for the AJAX request
+ */
+function google_weather_block_ajax() {
+  $request = (object) $_POST;
+
+  // try to read location from cookie/session, or take the default one
+  $location = ''; //stubbing
+
+  // derive weather from location
+  $weather = _google_weather_get_weather($location);
+
+  if (!isset($weather->error)) {
+    // save new location preference
+
+  }
+
+  print theme('google_weather_block', $weather);
+}
 
 /**
  * Implementation of hook_theme().
@@ -81,4 +107,96 @@ function theme_google_weather_block($text) {
 function google_weather_preprocess_google_weather_block(&$variables) {
   $variables['url'] = 'http://www.google.com/ig/api';
   $variables['weather_location'] = variable_get('google_weather_default_location', 'Roma');
+}
+
+/**
+ * Helper to query Google about weather in given location
+ * and build a handy weather object
+ */
+function _google_weather_get_weather($location = NULL) {
+  $weather = new stdClass();
+
+  // FRA:
+  // read weather location by direct call to simple_xml_load_file() so that
+  // $xml object is available
+
+  // if location was wrong or some other error occurred:
+  if (isset('xml->problem_cause') || !isset('xml->forecast_information')) { /* FRA: put correct tests here*/
+    $weather->error = t('Data not available for this location');
+    return $weather;
+  }
+
+  // else, populate $weather with right data
+  // FRA: you know how data are organized, so substitute '' with right vars! :P
+
+  $weather->icon = _google_weather_clean_icon('');
+                      // (google address and .gif extension should be stripped. I'll leave actual
+                      // position inside the template file so that it could be overridden at will
+                      // by different themers (nice, uh?! ;) ). Function _google_weather_clean_icon()
+                      // is already in this file! Take a look below.
+  $weather->current_temp_f = '';
+  $weather->current_temp_c = '';
+  $weather->current_condition = '';
+  $weather->current_humidity = '';
+  $weather->current_wind = '';
+
+  // foreach forcast block create new forecast element and
+  // push it at the bottom of a pile:
+  foreach /*or while()*/ (/*put elements here*/) {
+
+    $forecast = new stdClass();
+
+    $forecast->icon = _google_weather_clean_icon('');
+    $forecast->$day_of_week = '';
+    $forecast->condition = '';
+
+    // if $xml->conditions->units report SI, convert data to F and vice-versa.
+
+    if (/* units is SI*/) {
+      $forecast->low_c = '';
+      $forecast->high_c = ''
+      $forecast->low_f = _google_weather_c2f('');
+      $forecast->high_f = _google_weather_c2f('');
+    } else {
+      $forecast->low_c = _google_weather_f2c('');
+      $forecast->high_c = _google_weather_f2c('');
+      $forecast->low_f = '';
+      $forecast->high_f = '';
+    }
+
+    $weather->forecast[] = $forecast;
+  }
+
+  // return built object
+  return $weather;
+}
+
+/**
+ * Helper to extract icon name so that we can use our own instead
+ * of google standard ones. (should become an option in future versions)
+ */
+_google_weather_clean_icon($icon = '') {
+
+  if (strpos($icon,"/ig/images/weather/") !== false) {
+      $icon = str_replace("/ig/images/weather/", "" , $icon);
+  }
+
+  // convert to png
+  $icon = str_replace('.gif', '.png', $icon);
+  // exclude special languages prefixes from icon name (add them to the array if necessary)
+  $icon = str_replace(array('jp_'), '', $icon);
+
+  return $icon;
+}
+
+/**
+ * Helpers to convert temperature values: in forecasts temperatures are not
+ * returned in both units by Google, so we need to do the maths.
+ */
+_google_weather_c2f($temp) {
+  return intval( (9/5) * ( intval($temp) + 32 ));
+}
+
+_google_weather_f2c('') {
+  return intval( (5/9) * ( intval($temp) - 32 ));
 }
