@@ -130,9 +130,10 @@ function google_weather_theme($existing, $type, $theme, $path) {
 */
 function google_weather_preprocess_google_weather_block(&$variables) {
   //$variables['url'] = 'http://www.google.com/ig/api';
-  $variables['url'] = 'google_weather_block_ajax';
+  $variables['url_ajax'] = 'google_weather_block_ajax';
   $variables['weather_location'] = variable_get('google_weather_default_location', 'Roma');
   $variables['icon_url'] = drupal_get_path('module', 'google_weather')."/images/";
+  $variables['degree_type'] = variable_get('google_weather_default_degree_type', 'C');
 }
 
 /**
