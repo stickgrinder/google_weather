@@ -59,8 +59,15 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
     case 'view':
       if ($delta == 0) {
 
+        // read the $user object to discover if a location has already been selected
+        global $user;
+
         // try to read location from cookie/session, or take the default one
-        $location = ''; //stubbing
+        if (isset($user->google_weather_location) && ($user->google_weather_location != '')) {
+          $location = $user->google_weather_location;
+        } else {
+          $location = variable_get("google_weather_default_location",'Roma');
+        }
 
         // derive weather from location
         $weather = _google_weather_get_weather($location);
@@ -80,15 +87,25 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
 function google_weather_block_ajax() {
   $request = (object) $_POST;
 
-  // try to read location from cookie/session, or take the default one
-  $location = ''; //stubbing
+  // read the $user object to discover if a location has already been selected
+  global $user;
+
+  // location has to be defined in $_POST. If not, degrade gracefully
+  // on the cookie. If no cookie is defined, get the default location.
+  if (isset($request->google_weather_location) && ($request->google_weather_location != '')) {
+    $location = $request->google_weather_location;
+  } else if (isset($user->google_weather_location) && ($user->google_weather_location != '')) {
+    $location = $user->google_weather_location;
+  } else {
+    $location = variable_get("google_weather_default_location",'Roma');
+  }
 
   // derive weather from location
   $weather = _google_weather_get_weather($location);
 
   if (!isset($weather->error)) {
-    // save new location preference
-
+    $user->google_weather_location = $location;
+    user_save();
   }
 
   print theme('google_weather_block', $weather);
