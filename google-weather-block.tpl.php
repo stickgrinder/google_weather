@@ -2,6 +2,7 @@
 /**
  * Theme file for Google Weather block
  */
+$weather = $variables['text'];
 ?>
 <div class="google-weather-block">
 
