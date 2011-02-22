@@ -106,12 +106,6 @@ function google_weather_theme($existing, $type, $theme, $path) {
   );
 }
 
-/**
- * Implementation of theming callbacks
- */
-function theme_google_weather_block($text) {
-  return t($text);
-}
 
 /**
 * Implementation of $modulename_preprocess_$hook().
