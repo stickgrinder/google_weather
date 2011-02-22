@@ -72,6 +72,11 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
         //if(!ISSET($weather->current_temp_f)){echo "niente2";} //MANGINI
         $weather = _google_weather_get_weather($location);
 
+				$path = drupal_get_path('module', 'google_weather');
+      	drupal_add_css($path."/google_weather.css", 'module');
+      	drupal_add_js($path."/google_weather.js");
+				
+
         $block['subject'] = t('Google Weather');
         $block['content'] = theme('google_weather_block', $weather);
       }
@@ -86,7 +91,6 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
  */
 function google_weather_block_ajax() {
   $request = (object) $_POST;
-
 
   // read the $user object to discover if a location has already been selected
   $google_weather_user_location = $_COOKIES['google_weather_user_location'] ? $_COOKIES['google_weather_user_location'] : NULL;

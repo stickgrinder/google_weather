@@ -6,10 +6,10 @@
 <div class="google-weather-block">
 
     <div class="location">
-      <form action="<?php print str_replace("&", "&amp;", $url_ajax); ?>" method="post">
-        <input type="text" name="weather_location" value="<?php print $weather_location; ?>" />
+      <form id="weather_form" action="<?php print str_replace("&", "&amp;", $url_ajax); ?>" method="post">
+        <input id="i_weather_location" type="text" name="google_weather_location" value="<?php print $weather_location; ?>" />
       </form>
-      <h2><?php print $weather_location; ?></h2>
+      <h2 id="l_weather_location"><?php print $weather_location; ?></h2>
     </div> <!-- location information and form -->
 
     <?php if (isset($weather->error)) :?>
