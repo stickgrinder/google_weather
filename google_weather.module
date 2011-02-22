@@ -59,8 +59,14 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
     case 'view':
       if ($delta == 0) {
 
+        $google_weather_user_location = $_COOKIES['google_weather_user_location'] ? $_COOKIES['google_weather_user_location'] : NULL;
+
         // try to read location from cookie/session, or take the default one
-        $location = ''; //stubbing
+        if (isset($google_weather_user_location) && ($google_weather_user_location != '')) {
+          $location = $google_weather_user_location;
+        } else {
+          $location = variable_get("google_weather_default_location",'Roma');
+        }
 
         // derive weather from location
 				//if(!ISSET($weather->current_temp_f)){echo "niente2";} //MANGINI
@@ -82,15 +88,25 @@ function google_weather_block_ajax() {
   $request = (object) $_POST;
 	
 
-  // try to read location from cookie/session, or take the default one
-  $location = ''; //stubbing
+  // read the $user object to discover if a location has already been selected
+  $google_weather_user_location = $_COOKIES['google_weather_user_location'] ? $_COOKIES['google_weather_user_location'] : NULL;
+
+  // location has to be defined in $_POST. If not, degrade gracefully
+  // on the cookie. If no cookie is defined, get the default location.
+  if (isset($request->google_weather_location) && ($request->google_weather_location != '')) {
+    $location = $request->google_weather_location;
+  } else if (isset($google_weather_user_location) && ($google_weather_user_location != '')) {
+    $location = $google_weather_user_location;
+  } else {
+    $location = variable_get("google_weather_default_location",'Roma');
+  }
 
   // derive weather from location
   $weather = _google_weather_get_weather($location);
 
   if (!isset($weather->error)) {
-    // save new location preference
-
+    // save a cookie with user preference
+    setcookie('google_weather_user_location', $google_weather_user_location, time()+60*60*24*30); // the preference will last for 30 days.
   }
 
   print theme('google_weather_block', $weather);
@@ -108,12 +124,6 @@ function google_weather_theme($existing, $type, $theme, $path) {
   );
 }
 
-/**
- * Implementation of theming callbacks
- */
-function theme_google_weather_block($text) {
-  return t($text);
-}
 
 /**
 * Implementation of $modulename_preprocess_$hook().
