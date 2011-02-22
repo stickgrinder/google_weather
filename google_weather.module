@@ -59,12 +59,11 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
     case 'view':
       if ($delta == 0) {
 
-        // read the $user object to discover if a location has already been selected
-        global $user;
+        $google_weather_user_location = $_COOKIES['google_weather_user_location'] ? $_COOKIES['google_weather_user_location'] : NULL;
 
         // try to read location from cookie/session, or take the default one
-        if (isset($user->google_weather_location) && ($user->google_weather_location != '')) {
-          $location = $user->google_weather_location;
+        if (isset($google_weather_user_location) && ($google_weather_user_location != '')) {
+          $location = $google_weather_user_location;
         } else {
           $location = variable_get("google_weather_default_location",'Roma');
         }
@@ -88,14 +87,14 @@ function google_weather_block_ajax() {
   $request = (object) $_POST;
 
   // read the $user object to discover if a location has already been selected
-  global $user;
+  $google_weather_user_location = $_COOKIES['google_weather_user_location'] ? $_COOKIES['google_weather_user_location'] : NULL;
 
   // location has to be defined in $_POST. If not, degrade gracefully
   // on the cookie. If no cookie is defined, get the default location.
   if (isset($request->google_weather_location) && ($request->google_weather_location != '')) {
     $location = $request->google_weather_location;
-  } else if (isset($user->google_weather_location) && ($user->google_weather_location != '')) {
-    $location = $user->google_weather_location;
+  } else if (isset($google_weather_user_location) && ($google_weather_user_location != '')) {
+    $location = $google_weather_user_location;
   } else {
     $location = variable_get("google_weather_default_location",'Roma');
   }
@@ -104,8 +103,8 @@ function google_weather_block_ajax() {
   $weather = _google_weather_get_weather($location);
 
   if (!isset($weather->error)) {
-    $user->google_weather_location = $location;
-    user_save();
+    // save a cookie with user preference
+    setcookie('google_weather_user_location', $google_weather_user_location, time()+60*60*24*30); // the preference will last for 30 days.
   }
 
   print theme('google_weather_block', $weather);
