@@ -69,7 +69,7 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
         }
 
         // derive weather from location
-				//if(!ISSET($weather->current_temp_f)){echo "niente2";} //MANGINI
+        //if(!ISSET($weather->current_temp_f)){echo "niente2";} //MANGINI
         $weather = _google_weather_get_weather($location);
 
         $block['subject'] = t('Google Weather');
@@ -86,7 +86,7 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
  */
 function google_weather_block_ajax() {
   $request = (object) $_POST;
-	
+
 
   // read the $user object to discover if a location has already been selected
   $google_weather_user_location = $_COOKIES['google_weather_user_location'] ? $_COOKIES['google_weather_user_location'] : NULL;
@@ -118,7 +118,7 @@ function google_weather_block_ajax() {
 function google_weather_theme($existing, $type, $theme, $path) {
   return array(
     'google_weather_block' => array(
-      'arguments' => array('text' => 'No text'),
+      'arguments' => array('weather' => FALSE),
       'template' => 'google-weather-block',
     ),
   );
@@ -132,6 +132,7 @@ function google_weather_preprocess_google_weather_block(&$variables) {
   //$variables['url'] = 'http://www.google.com/ig/api';
   $variables['url'] = 'google_weather_block_ajax';
   $variables['weather_location'] = variable_get('google_weather_default_location', 'Roma');
+  $variables['icon_url'] = drupal_get_path('module', 'google_weather')."/images/";
 }
 
 /**
@@ -144,12 +145,12 @@ function _google_weather_get_weather($location = NULL) {
   // FRA: -M
   // read weather location by direct call to simple_xml_load_file() so that
   // $xml object is available
-	$request_url = 'http://www.google.com/ig/api?weather='.$location.'';
-	$xml = simplexml_load_file($request_url) or die("Google Weather feed not loading");
+  $request_url = 'http://www.google.com/ig/api?weather='.$location.'';
+  $xml = simplexml_load_file($request_url) or die("Google Weather feed not loading");
 
   // if location was wrong or some other error occurred:
   //if (isset('xml->problem_cause') || !isset('xml->forecast_information')) { /* FRA: put correct tests here*/
-	if ($xml->weather->problem_cause['data']) {
+  if ($xml->weather->problem_cause['data']) {
     $weather->error = t('Data not available for this location');
     return $weather;
   }else{
@@ -157,49 +158,49 @@ function _google_weather_get_weather($location = NULL) {
   // else, populate $weather with right data
   // FRA: you know how data are organized, so substitute '' with right vars! :P
 
-  	$weather->icon = _google_weather_clean_icon($xml->weather->current_conditions->icon[data]);
+    $weather->icon = _google_weather_clean_icon($xml->weather->current_conditions->icon[data]);
                       // (google address and .gif extension should be stripped. I'll leave actual
                       // position inside the template file so that it could be overridden at will
                       // by different themers (nice, uh?! ;) ). Function _google_weather_clean_icon()
                       // is already in this file! Take a look below.
-  	$weather->current_temp_f = $xml->weather->current_conditions->temp_f[data];
-  	$weather->current_temp_c = $xml->weather->current_conditions->temp_c[data];
-  	$weather->current_condition = $xml->weather->current_conditions->condition[data];
-  	$weather->current_humidity = $xml->weather->current_conditions->humidity[data];
-  	$weather->current_wind = $xml->weather->current_conditions->wind_condition[data];
-  	$weather->unit_system = $xml->weather->forecast_information->unit_system[data];
+    $weather->current_temp_f = $xml->weather->current_conditions->temp_f[data];
+    $weather->current_temp_c = $xml->weather->current_conditions->temp_c[data];
+    $weather->current_condition = $xml->weather->current_conditions->condition[data];
+    $weather->current_humidity = $xml->weather->current_conditions->humidity[data];
+    $weather->current_wind = $xml->weather->current_conditions->wind_condition[data];
+    $weather->unit_system = $xml->weather->forecast_information->unit_system[data];
 
   // foreach forcast block create new forecast element and
   // push it at the bottom of a pile:
-		for ($i = 0; $i <= 3; $i++){
-	//I used a FOR cicle because there are only 4 forecast_contidions
-	
-    	$forecast = new stdClass;
-	
-    	$forecast->icon = _google_weather_clean_icon(explode("/ig/images/weather/", $xml->weather->forecast_conditions->$i->icon[data]));
-    	$forecast->day_of_week = $xml->weather->forecast_conditions->$i->day_of_week[data];
-    	$forecast->condition = $xml->weather->forecast_conditions->$i->condition[data];
-	
-    	// if $xml->conditions->units report SI, convert data to F and vice-versa.
-	
-    	if ($weather->unit_system=='SI') {
-      	$forecast->low_c = $xml->weather->forecast_conditions->$i->low[data];
-      	$forecast->high_c = $xml->weather->forecast_conditions->$i->high[data];
-      	$forecast->low_f = _google_weather_c2f($xml->weather->forecast_conditions->$i->low[data]);
-      	$forecast->high_f = _google_weather_c2f($xml->weather->forecast_conditions->$i->high[data]);
-    	} else {
-      	$forecast->low_c = _google_weather_f2c($xml->weather->forecast_conditions->$i->low[data]);
-      	$forecast->high_c = _google_weather_f2c($xml->weather->forecast_conditions->$i->high[data]);
-      	$forecast->low_f = $xml->weather->forecast_conditions->$i->low[data];
-      	$forecast->high_f = $xml->weather->forecast_conditions->$i->high[data];
-    	}
-	
-    	$weather->forecast[] = $forecast;
-  	}
+    for ($i = 0; $i <= 3; $i++){
+  //I used a FOR cicle because there are only 4 forecast_contidions
+
+      $forecast = new stdClass;
+
+      $forecast->icon = _google_weather_clean_icon($xml->weather->forecast_conditions->$i->icon[data]);
+      $forecast->day_of_week = $xml->weather->forecast_conditions->$i->day_of_week[data];
+      $forecast->condition = $xml->weather->forecast_conditions->$i->condition[data];
+
+      // if $xml->conditions->units report SI, convert data to F and vice-versa.
+
+      if ($weather->unit_system=='SI') {
+        $forecast->low_c = $xml->weather->forecast_conditions->$i->low[data];
+        $forecast->high_c = $xml->weather->forecast_conditions->$i->high[data];
+        $forecast->low_f = _google_weather_c2f($xml->weather->forecast_conditions->$i->low[data]);
+        $forecast->high_f = _google_weather_c2f($xml->weather->forecast_conditions->$i->high[data]);
+      } else {
+        $forecast->low_c = _google_weather_f2c($xml->weather->forecast_conditions->$i->low[data]);
+        $forecast->high_c = _google_weather_f2c($xml->weather->forecast_conditions->$i->high[data]);
+        $forecast->low_f = $xml->weather->forecast_conditions->$i->low[data];
+        $forecast->high_f = $xml->weather->forecast_conditions->$i->high[data];
+      }
+
+      $weather->forecast[] = $forecast;
+    }
 
   // return built object
-  	return $weather;
-	}
+    return $weather;
+  }
 }
 
 /**

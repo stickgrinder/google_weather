@@ -5,10 +5,9 @@
 ?>
 <div class="google-weather-block">
 
-
     <div class="leftbit">
         <div class="icon">
-            <img src="<?php echo $weather->icon; ?>" alt="" />
+            <img src="<?php echo $icon_url.$weather->icon; ?>" alt="" />
             <div class="degf"><?php echo $weather->current_temp_f;?>&deg;</div>
             <div class="degc"><?php echo $weather->current_temp_c;?>&deg;</div>
         </div>
