@@ -11,6 +11,10 @@
       </form>
       <h2 id="l_weather_location"><?php print $weather_location; ?></h2>
     </div> <!-- location information and form -->
+    <div class="degree_types">
+      <a href="#" title="<?php echo t("View temperatures in Celsius"); ?>" <?php if ($degree_type == 'C'): ?>class="active"<?php endif; ?>>&deg;C</a> |
+      <a href="#" title="<?php echo t("View temperatures in Farenheit"); ?>" <?php if ($degree_type == 'F'): ?>class="active"<?php endif; ?>>&deg;F</a>
+    </div>
 
     <?php if (isset($weather->error)) :?>
 
@@ -22,15 +26,11 @@
     <div class="today">
         <div class="icon">
             <img src="<?php print $icon_url.$weather->icon; ?>" alt="" />
-            <div class="tempf"><?php print $weather->current_temp_f;?>&deg;</div>
-            <div class="tempc"><?php print $weather->current_temp_c;?>&deg;</div>
-        </div>
-        <div class="degree_types">
-          <a href="#" title="<?php echo t("View temperatures in Celsius"); ?>" <?php if ($degree_type == 'C'): ?>class="active"<?php endif; ?>>&deg;C</a> |
-          <a href="#" title="<?php echo t("View temperatures in Farenheit"); ?>" <?php if ($degree_type == 'F'): ?>class="active"<?php endif; ?>>&deg;F</a>
+            <span class="temp dgf"><?php print $weather->current_temp_f;?>&deg;</span>
+            <span class="temp dgc"><?php print $weather->current_temp_c;?>&deg;</span>
         </div>
         <div class="info">
-          <div class="row"><?php print $weather->current_condition; ?></div>
+          <div class="row curr_condition"><?php print $weather->current_condition; ?></div>
           <div class="row"><?php print $weather->current_humidity; ?></div>
           <div class="row"><?php print $weather->current_wind; ?></div>
         </div>
@@ -41,11 +41,11 @@
       <div class="day">
           <h3><?php print $day->day_of_week; ?></h3>
           <img src="<?php print $icon_url.$day->icon; ?>" alt="" />
-          <div class="tempf">
+          <div class="temp dgf active">
               <span class="low"><?php print $day->low_f; ?></span> |
               <span class="high"><?php print $day->high_f; ?></span>
           </div>
-          <div class="tempc">
+          <div class="temp dgc ">
               <span class="low"><?php print $day->low_c; ?></span> |
               <span class="high"><?php print $day->high_c; ?></span>
           </div>

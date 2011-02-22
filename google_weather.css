@@ -1,0 +1,64 @@
+.google-weather-block .location form
+{
+  margin-bottom: 5px;
+  display: none;
+}
+.google-weather-block .location h2
+{
+  font-size: 16px;
+  font-weight: normal;
+  margin-bottom: 5px;
+}
+
+/* mozilla hack */
+.google-weather-block .today:after
+{
+  content: ".";
+  height: 0;
+  visibility: hidden;
+  display: block;
+  clear: both;
+}
+.dgf {
+  display: none;
+}
+.google-weather-block .today
+{
+  display: block;
+  background: #ccf;
+  border: 1px solid white;
+  padding: 4px;
+  margin-bottom: 4px;
+}
+.google-weather-block .today .icon
+{
+  width: 35px;
+  float: left;
+}
+.google-weather-block .today .info
+{
+  display: block;
+  float: left;
+  font-size: 10px;
+  font-weight: bold;
+  line-height: 14px;
+  margin: 4px 0 0 4px;
+}
+.google-weather-block .today .info .curr_condition {
+  font-size: 120%;
+  color: black;
+}
+.google-weather-block .today .icon img
+{
+  display: block;
+}
+.google-weather-block .today .temp
+{
+  font-size: 18px;
+  font-weight: bold;
+  text-align: right;
+}
+.forecasts .day {
+  width: 25%;
+  float: left;
+}
