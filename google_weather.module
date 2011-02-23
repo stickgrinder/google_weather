@@ -22,6 +22,7 @@ function google_weather_menu() {
  * Implementation of hook_block().
  */
 function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
+  
   switch ($op) {
 
     case 'list':
@@ -64,7 +65,9 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
         // try to read location from cookie/session, or take the default one
         if (isset($google_weather_user_location) && ($google_weather_user_location != '')) {
           $location = $google_weather_user_location;
+					echo "111";
         } else {
+					echo "222";
           $location = variable_get("google_weather_default_location",'Roma');
         }
 
