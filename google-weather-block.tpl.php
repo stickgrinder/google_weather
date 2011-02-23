@@ -43,12 +43,12 @@
           <h3><?php print $day->day_of_week; ?></h3>
           <img src="<?php print $icon_url.$day->icon; ?>" alt="" />
           <div class="temp dgf">
-              <span class="low"><?php print $day->low_f; ?></span> |
-              <span class="high"><?php print $day->high_f; ?></span>
+              <span class="low"><?php print $day->low_f; ?>&deg;</span> |
+              <span class="high"><?php print $day->high_f; ?>&deg;</span>
           </div>
           <div class="temp dgc">
-              <span class="low"><?php print $day->low_c; ?></span> |
-              <span class="high"><?php print $day->high_c; ?></span>
+              <span class="low"><?php print $day->low_c; ?>&deg;</span> |
+              <span class="high"><?php print $day->high_c; ?>&deg;</span>
           </div>
       </div>
       <?php endforeach; ?>
