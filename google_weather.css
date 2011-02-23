@@ -8,6 +8,7 @@
   font-size: 16px;
   font-weight: normal;
   margin-bottom: 5px;
+  cursor: pointer;
 }
 
 /* mozilla hack */
@@ -25,9 +26,9 @@
 .google-weather-block .today
 {
   display: block;
-  background: #ccf;
+  background: #ddd;
   border: 1px solid white;
-  padding: 4px;
+  padding: 4px 10px;
   margin-bottom: 4px;
 }
 .google-weather-block .today .icon
@@ -61,4 +62,17 @@
 .forecasts .day {
   width: 25%;
   float: left;
+  text-align: center;
+}
+.forecasts .day h3 {
+  font-size: 13px;
+}
+.forecasts .day .temp {
+  background: #ddd;
+  border: 1px solid white;
+  width: 80%;
+  margin: 0 auto;
+  font-size: 9px;
+  font-weight: bold;
+  white-space: nowrap;
 }

@@ -41,11 +41,11 @@
       <div class="day">
           <h3><?php print $day->day_of_week; ?></h3>
           <img src="<?php print $icon_url.$day->icon; ?>" alt="" />
-          <div class="temp dgf active">
+          <div class="temp dgf">
               <span class="low"><?php print $day->low_f; ?></span> |
               <span class="high"><?php print $day->high_f; ?></span>
           </div>
-          <div class="temp dgc ">
+          <div class="temp dgc">
               <span class="low"><?php print $day->low_c; ?></span> |
               <span class="high"><?php print $day->high_c; ?></span>
           </div>
