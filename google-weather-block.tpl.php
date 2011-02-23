@@ -6,10 +6,11 @@
 <div class="google-weather-block">
 
     <div class="location">
-      <form id="weather_form" action="<?php print str_replace("&", "&amp;", $url_ajax); ?>" method="post">
-        <input id="i_weather_location" type="text" name="google_weather_location" value="<?php print $weather_location; ?>" />
+      <!--<form id="weather_form" action="<?php print str_replace("&", "&amp;", $url_ajax); ?>" method="post">-->
+      <form id="weather_form" method="post">
+        <input id="google_weather_location_i" type="text" name="google_weather_location" value="<?php print $weather_location; ?>" />
       </form>
-      <h2 id="l_weather_location"><?php print $weather_location; ?></h2>
+      <h2 id="google_weather_location_l"><?php print $weather_location; ?></h2>
     </div> <!-- location information and form -->
     <div class="degree_types">
       <a href="#" title="<?php echo t("View temperatures in Celsius"); ?>" <?php if ($degree_type == 'C'): ?>class="active"<?php endif; ?>>&deg;C</a> |
