@@ -13,8 +13,8 @@
       <h2 id="google_weather_location_l"><?php print $weather_location; ?></h2>
     </div> <!-- location information and form -->
     <div class="degree_types">
-      <a href="#" title="<?php echo t("View temperatures in Celsius"); ?>" <?php if ($degree_type == 'C'): ?>class="active"<?php endif; ?>>&deg;C</a> |
-      <a href="#" title="<?php echo t("View temperatures in Farenheit"); ?>" <?php if ($degree_type == 'F'): ?>class="active"<?php endif; ?>>&deg;F</a>
+      <a id="google_weather_C" href="javascript:;" title="<?php echo t("View temperatures in Celsius"); ?>" <?php if ($degree_type == 'C'): ?>class="degree_types_active"<?php endif; ?>>&deg;C</a> |
+      <a id="google_weather_F" href="javascript:;" title="<?php echo t("View temperatures in Farenheit"); ?>" <?php if ($degree_type == 'F'): ?>class="degree_types_active"<?php endif; ?>>&deg;F</a>
     </div>
 
     <?php if (isset($weather->error)) :?>

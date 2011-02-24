@@ -21,9 +21,11 @@
   display: block;
   clear: both;
 }
+/*
 .dgf {
   display: none;
 }
+*/
 .google-weather-block .today
 {
   display: block;
@@ -45,6 +47,9 @@
   font-weight: bold;
   line-height: 14px;
   margin: 4px 0 0 4px;
+}
+.degree_types_active{
+  font-weight: bold;
 }
 .google-weather-block .today .info .curr_condition {
   font-size: 120%;
