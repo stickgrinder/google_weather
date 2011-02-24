@@ -1,17 +1,9 @@
 /** beginning of file **/
 
-if (Drupal.jsEnabled) {
-  $(document).ready(function () {
-		inizializza();
-  });
-	Drupal.behaviors.myBehaviorsFunction = myBehaviorsFunction;
-}
-
-function myBehaviorsFunction() {
-  inizializza();
-}
-
-function inizializza(){
+// I attach the jquery code to the drupal beaviors to ensure it keeps 
+// working even when new content has been added to the page after a 
+// JQuery callback
+Drupal.behaviors.google_weather_jquery = function () {
     $('#google_weather_location_i').hide();
     $('#google_weather_location_l').show();
 
@@ -22,22 +14,15 @@ function inizializza(){
   			url: "google_weather_block_ajax",
 				cache: false,
 				data: "google_weather_location=" + $('#google_weather_location_i').val(),
-  			//context: document.body,
   			success: function(data){
     			$('#google_weather_location_i').hide();
     			$('#google_weather_location_l').show();
 					$(".google-weather-block").parent().html(data);
+					Drupal.attachBehaviors($(".google-weather-block").parent());
     			$('#google_weather_location_l').html(google_weather_location_value);
     			$('#google_weather_location_i').val(google_weather_location_value);
     			$('#google_weather_location_i').hide();
     			$('#google_weather_location_l').show();
-					$('#google_weather_location_l').click(function() {
-
-    				$('#google_weather_location_i').show();
-    				$('#google_weather_location_l').hide();
-    				$('#google_weather_location_i').focus();
-
-					});
   			}
 			});
   		return false;

@@ -65,9 +65,7 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
         // try to read location from cookie/session, or take the default one
         if (isset($google_weather_user_location) && ($google_weather_user_location != '')) {
           $location = $google_weather_user_location;
-					echo "111";
         } else {
-					echo "222";
           $location = variable_get("google_weather_default_location",'Roma');
         }
 
@@ -75,7 +73,7 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
         //if(!ISSET($weather->current_temp_f)){echo "niente2";} //MANGINI
         $weather = _google_weather_get_weather($location);
 
-				$path = drupal_get_path('module', 'google_weather');
+	$path = drupal_get_path('module', 'google_weather');
       	drupal_add_css($path."/google_weather.css", 'module');
       	drupal_add_js($path."/google_weather.js");
 				
@@ -93,6 +91,11 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
  * Response for the AJAX request
  */
 function google_weather_block_ajax() {
+
+//CREARE DUE FUNZIONI DI TEMIZZAZIONE
+//PER I DUE BLOCCHI (FORM E CONDIZIONI)
+//al submit ricarico solo il blocco delle condizioni
+
   $request = (object) $_POST;
 
   // read the $user object to discover if a location has already been selected
@@ -111,7 +114,7 @@ function google_weather_block_ajax() {
   // derive weather from location
   $weather = _google_weather_get_weather($location);
 
-  if (!isset($weather->error)) {
+  if (!isset($weather->problem_cause)) {
     // save a cookie with user preference
     setcookie('google_weather_user_location', $google_weather_user_location, time()+60*60*24*30); // the preference will last for 30 days.
   }
