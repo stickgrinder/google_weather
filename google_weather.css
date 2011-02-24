@@ -9,6 +9,7 @@
   font-weight: normal;
   margin-bottom: 5px;
   cursor: pointer;
+  background: transparent url('images/ico_search.png') no-repeat right center;
 }
 
 /* mozilla hack */
