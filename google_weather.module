@@ -22,7 +22,7 @@ function google_weather_menu() {
  * Implementation of hook_block().
  */
 function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
-  
+
   switch ($op) {
 
     case 'list':
@@ -72,10 +72,10 @@ function google_weather_block($op = 'list', $delta = 0, $edit = array()) {
         // derive weather from location
         $weather = _google_weather_get_weather($location);
 
-	$path = drupal_get_path('module', 'google_weather');
-      	drupal_add_css($path."/google_weather.css", 'module');
-      	drupal_add_js($path."/google_weather.js");
-				
+  $path = drupal_get_path('module', 'google_weather');
+        drupal_add_css($path."/google_weather.css", 'module');
+        drupal_add_js($path."/google_weather.js");
+
 
         $block['subject'] = t('Google Weather');
         $block['content'] = theme('google_weather_block', $weather);
@@ -147,23 +147,28 @@ function google_weather_preprocess_google_weather_block(&$variables) {
  */
 function _google_weather_get_weather($location = NULL) {
   $weather = new stdClass;
+  global $language;
 
   // FRA: -M
   // read weather location by direct call to simple_xml_load_file() so that
   // $xml object is available
-  $request_url = 'http://www.google.com/ig/api?weather='.$location.'';
-  $xml = simplexml_load_file($request_url) or die("Google Weather feed not loading");
+  $request_url = 'http://www.google.com/ig/api?weather='.urlencode($location).'&hl='.$language->language;
+  $ch = curl_init();
+  curl_setopt ($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt ($ch, CURLOPT_URL, $request_url);
+  curl_setopt($ch, CURLOPT_USERAGENT, $_SERVER['HTTP_USER_AGENT']);
+  curl_setopt ($ch, CURLOPT_TIMEOUT, 60);
+  // read XML
+  $xml = simplexml_load_string(curl_exec ($ch)) or  $weather->error = t('Google Weather feed not loading');
+  curl_close ($ch);
 
   // if location was wrong or some other error occurred:
-  //if (isset('xml->problem_cause') || !isset('xml->forecast_information')) { /* FRA: put correct tests here*/
   if ($xml->weather->problem_cause['data']) {
     $weather->error = t('Data not available for this location');
     return $weather;
   }else{
 
   // else, populate $weather with right data
-  // FRA: you know how data are organized, so substitute '' with right vars! :P
-
     $weather->icon = _google_weather_clean_icon($xml->weather->current_conditions->icon[data]);
                       // (google address and .gif extension should be stripped. I'll leave actual
                       // position inside the template file so that it could be overridden at will

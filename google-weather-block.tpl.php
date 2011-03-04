@@ -26,7 +26,7 @@
     <?php else: // there is no error and info are available ?>
     <div class="today">
         <div class="icon">
-            <img src="<?php print $icon_url.$weather->icon; ?>" alt="" />
+            <img src="/<?php print $icon_url.$weather->icon; ?>" alt="" />
             <span class="temp dgf"><?php print $weather->current_temp_f;?>&deg;</span>
             <span class="temp dgc"><?php print $weather->current_temp_c;?>&deg;</span>
         </div>
@@ -41,7 +41,7 @@
       <?php foreach ($weather->forecast as $day): ?>
       <div class="day">
           <h3><?php print $day->day_of_week; ?></h3>
-          <img src="<?php print $icon_url.$day->icon; ?>" alt="" />
+          <img src="/<?php print $icon_url.$day->icon; ?>" alt="" />
           <div class="temp dgf">
               <span class="low"><?php print $day->low_f; ?>&deg;</span> |
               <span class="high"><?php print $day->high_f; ?>&deg;</span>
